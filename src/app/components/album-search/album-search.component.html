@@ -1,0 +1,13 @@
+<div>
+    <input [(ngModel)]="query" (ngModelChange)="onQueryChange($event)" placeholder="Search for an album..."/>
+</div>
+
+<h2>Albums</h2>
+@for (album of albums; track album.id) {
+    <div>
+        <p><strong>{{ album.name }}</strong> by {{ album.artists[0]?.name }}</p>
+        <img [src]="album.images[0]?.url" alt="{{ album.name }}" width="100"/>
+    </div>
+} @empty {
+    <p>No albums found</p>
+}
