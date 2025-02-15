@@ -24,7 +24,7 @@ export class SpotifyService {
     ) {
         this.spotify = SpotifyApi.withUserAuthorization(
             environment.spotify.clientId,
-            environment.spotify.clientId,
+            environment.spotify.redirectUri,
             [
                 'user-read-email',
                 'playlist-read-private',
