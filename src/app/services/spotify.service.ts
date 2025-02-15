@@ -14,6 +14,8 @@ import { SpotifyPlayerService } from './spotify-player.service';
 export class SpotifyService {
     private spotify: SpotifyApi;
     public userProfile$ = new BehaviorSubject<UserProfile | null>(null);
+    public currentTrack$ = this.spotifyPlayerService.currentTrack$;
+    public isPlaying$ = this.spotifyPlayerService.isPlaying$;
 
     constructor(private spotifyPlayerService: SpotifyPlayerService) {
         this.spotify = SpotifyApi.withUserAuthorization(
@@ -46,6 +48,18 @@ export class SpotifyService {
 
     private initializePlayerService(accessToken: string) {
         this.spotifyPlayerService.initialize(accessToken).subscribe();
+    }
+
+    togglePlay() {
+        this.spotifyPlayerService.togglePlay();
+    }
+
+    skipToNextTrack() {
+        this.spotifyPlayerService.skipToNextTrack();
+    }
+
+    skipToPrevTrack() {
+        this.spotifyPlayerService.skipToPrevTrack();
     }
 
     searchAlbums(query: string) {

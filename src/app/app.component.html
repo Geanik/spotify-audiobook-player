@@ -1,4 +1,45 @@
-@if (userDisplayName$ | async; as userDisplayName) {
-    <p>{{ userDisplayName }}</p>
-}
+<nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary sticky-top mb-3">
+    <div class="container-fluid">
+        <a class="navbar-brand" routerLink=".">
+            🔊📚
+        </a>
+        <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed">&#9776;</button>
+
+        <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse ml-d-flex justify-content-between">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" [routerLinkActive]="['active']" [routerLink]="'/home'"
+                       (click)="isMenuCollapsed = true">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [routerLinkActive]="['active']" [routerLink]="'/private'"
+                       (click)="isMenuCollapsed = true">Private</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [routerLinkActive]="['active']" [routerLink]="'/standard'"
+                       (click)="isMenuCollapsed = true">Standard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [routerLinkActive]="['active']" [routerLink]="'/pro'"
+                       (click)="isMenuCollapsed = true">Pro</a>
+                </li>
+            </ul>
+
+            @if (userDisplayName$ | async; as userDisplayName) {
+                <div id="profileStuff" class="ml-auto">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            {{ userDisplayName }}
+                            <img src="https://api.dicebear.com/8.x/pixel-art/svg" alt="profile" width="30"
+                                 class="rounded-circle">
+                        </li>
+                    </ul>
+                </div>
+            }
+        </div>
+    </div>
+</nav>
+
 <router-outlet/>
+
+<app-media-control></app-media-control>

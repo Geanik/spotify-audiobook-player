@@ -17,6 +17,12 @@ export class SpotifyPlayerService {
     private deviceId = new ReplaySubject<string>(1);
     public deviceId$ = this.deviceId.asObservable();
 
+    private currentTrack = new ReplaySubject<any>(1);
+    public currentTrack$ = this.currentTrack.asObservable();
+
+    private isPlaying = new ReplaySubject<boolean>(1);
+    public isPlaying$ = this.isPlaying.asObservable();
+
     constructor() {
         this.defineSpotifyCallback();
     }
@@ -74,6 +80,18 @@ export class SpotifyPlayerService {
         this.player.addListener('not_ready', ({ device_id }: any) => {
             console.log('Device ID has gone offline', device_id);
         });
+        this.player.addListener('player_state_changed', (state: any) => {
+            console.log('state: ', state);
+            if (state) {
+                if (typeof state.paused === 'boolean') {
+                    this.isPlaying.next(!state.paused);
+                }
+
+                if (state.track_window && state.track_window.current_track) {
+                    this.currentTrack.next(state.track_window.current_track);
+                }
+            }
+        });
     }
 
     // this could maybe be removed
@@ -94,5 +112,17 @@ export class SpotifyPlayerService {
                 document.head.appendChild(script);
             }
         });
+    }
+
+    togglePlay() {
+        this.player.togglePlay();
+    }
+
+    skipToNextTrack() {
+        this.player.nextTrack();
+    }
+
+    skipToPrevTrack() {
+        this.player.previousTrack();
     }
 }
