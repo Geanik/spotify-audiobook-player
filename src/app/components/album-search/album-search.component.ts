@@ -20,10 +20,7 @@ export class AlbumSearchComponent {
 
     private setupSearch() {
         this.searchSubject
-            .pipe(
-                debounceTime(350),
-                distinctUntilChanged(),
-            )
+            .pipe(debounceTime(350), distinctUntilChanged())
             .subscribe((query) => {
                 if (query) {
                     this.searchAlbums(query);
@@ -42,9 +39,14 @@ export class AlbumSearchComponent {
             .searchAlbums(query)
             .pipe(
                 tap((result: any) => {
+                    console.log(result);
                     this.albums = result.albums.items;
                 }),
             )
             .subscribe();
+    }
+
+    onAlbumClick(albumId: string) {
+        this.spotifyService.playAlbum(albumId);
     }
 }

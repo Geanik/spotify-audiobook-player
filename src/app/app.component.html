@@ -1,1 +1,4 @@
-<router-outlet />
+@if (userDisplayName$ | async; as userDisplayName) {
+    <p>{{ userDisplayName }}</p>
+}
+<router-outlet/>
