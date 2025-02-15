@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AsyncPipe, NgClass, NgStyle } from '@angular/common';
 import { SpotifyService } from '../../services/spotify.service';
-import { map, tap } from 'rxjs';
+import { map } from 'rxjs';
 
 @Component({
     selector: 'app-media-control',
@@ -23,15 +23,7 @@ export class MediaControlComponent {
         ),
     );
 
-    constructor(private spotifyService: SpotifyService) {
-        this.isPlaying$
-            .pipe(
-                tap((isPlaying) => {
-                    console.log('Is Playing:', isPlaying);
-                }),
-            )
-            .subscribe();
-    }
+    constructor(private spotifyService: SpotifyService) {}
 
     togglePlay() {
         console.log('Toggle Play');

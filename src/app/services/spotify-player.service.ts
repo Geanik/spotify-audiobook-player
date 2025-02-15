@@ -81,7 +81,6 @@ export class SpotifyPlayerService {
             console.log('Device ID has gone offline', device_id);
         });
         this.player.addListener('player_state_changed', (state: any) => {
-            console.log('state: ', state);
             if (state) {
                 if (typeof state.paused === 'boolean') {
                     this.isPlaying.next(!state.paused);

@@ -7,6 +7,7 @@ import {
 import { environment } from '../../environments/environment';
 import { BehaviorSubject, from, map, Observable, switchMap, tap } from 'rxjs';
 import { SpotifyPlayerService } from './spotify-player.service';
+import { StorageService } from './storage.service';
 
 @Injectable({
     providedIn: 'root',
@@ -17,7 +18,10 @@ export class SpotifyService {
     public currentTrack$ = this.spotifyPlayerService.currentTrack$;
     public isPlaying$ = this.spotifyPlayerService.isPlaying$;
 
-    constructor(private spotifyPlayerService: SpotifyPlayerService) {
+    constructor(
+        private spotifyPlayerService: SpotifyPlayerService,
+        private storageService: StorageService,
+    ) {
         this.spotify = SpotifyApi.withUserAuthorization(
             environment.spotify.clientId,
             environment.spotify.clientId,
@@ -44,6 +48,11 @@ export class SpotifyService {
                 }),
             )
             .subscribe();
+
+        this.currentTrack$.subscribe((track) => {
+            const albumId = track.album.uri.replace('spotify:album:', '');
+            this.storageService.saveLastPlayedTrack(albumId, track.id);
+        });
     }
 
     private initializePlayerService(accessToken: string) {
@@ -66,29 +75,35 @@ export class SpotifyService {
         return from(this.spotify.search(query, ['album']));
     }
 
+    getAlbums(albumIds: string[]) {
+        return from(this.spotify.albums.get(albumIds));
+    }
+
     getAlbumTracks(albumId: string): Observable<SimplifiedTrack[]> {
         return from(this.spotify.albums.get(albumId)).pipe(
             map((album) => album.tracks.items),
         );
     }
 
-    playTrack(trackId: string) {
-        this.playMedia({ uris: [`spotify:track:${trackId}`] });
-    }
-
     playAlbum(albumId: string) {
-        this.playMedia({ contextUri: `spotify:album:${albumId}` });
-    }
+        const lastPlayedTrack = this.storageService.getLastPlayedTrack(albumId);
 
-    private playMedia(options: { contextUri?: string; uris?: string[] }) {
+        let offSet: object | undefined = undefined;
+        if (lastPlayedTrack) {
+            offSet = {
+                uri: `spotify:track:${lastPlayedTrack}`,
+            };
+        }
+
         this.spotifyPlayerService.deviceId$
             .pipe(
                 tap((deviceId) => {
                     if (deviceId) {
                         this.spotify.player.startResumePlayback(
                             deviceId,
-                            options.contextUri,
-                            options.uris,
+                            `spotify:album:${albumId}`,
+                            undefined,
+                            offSet,
                         );
                     }
                 }),

@@ -1,0 +1,10 @@
+<p>home works!</p>
+
+@for (album of savedAlbums; track album) {
+    <div>
+        <p><strong>{{ album.name }}</strong> by {{ album.artists[0]?.name }}</p>
+        <img [src]="album.images[0]?.url" alt="{{ album.name }}" width="100"/>
+    </div>
+} @empty {
+    <p>No albums saved</p>
+}
