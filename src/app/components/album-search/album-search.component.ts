@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { SpotifyService } from '../../services/spotify.service';
 import { debounceTime, distinctUntilChanged, Subject, tap } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { AlbumCardComponent } from '../album-card/album-card.component';
 
 @Component({
     selector: 'app-album-search',
-    imports: [FormsModule],
+    imports: [FormsModule, AlbumCardComponent],
     templateUrl: './album-search.component.html',
     styleUrl: './album-search.component.scss',
 })

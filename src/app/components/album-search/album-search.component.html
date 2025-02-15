@@ -1,13 +1,35 @@
-<div>
-    <input [(ngModel)]="query" (ngModelChange)="onQueryChange($event)" placeholder="Search for an album..."/>
-</div>
+<div class="container text-center">
+    <h1 class="display-3 text-primary">
+        Search
+    </h1>
+    <p class="lead">Search for albums you want to listen to</p>
 
-<h2>Albums</h2>
-@for (album of albums; track album.id) {
-    <div (click)="onAlbumClick(album.id)">
-        <p><strong>{{ album.name }}</strong> by {{ album.artists[0]?.name }}</p>
-        <img [src]="album.images[0]?.url" alt="{{ album.name }}" width="100"/>
+    <div class="input-group w-50 mx-auto">
+        <input
+            type="text"
+            class="form-control"
+            placeholder="Search for an album..."
+            [(ngModel)]="query"
+            (ngModelChange)="onQueryChange($event)"
+            autocomplete="off"
+        />
+        <div class="input-group-append">
+    <span class="input-group-text">
+        <i class="bi bi-search"></i>
+    </span>
+        </div>
     </div>
-} @empty {
-    <p>No albums found</p>
-}
+
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 mt-3">
+        @for (album of albums; track album.id) {
+            <app-album-card [album]="album" (albumClicked)="onAlbumClick(album.id)">
+            </app-album-card>
+        }
+    </div>
+
+    @if (query.trim() && albums.length == 0) {
+        <div class="col-12">
+            <h4>No albums found</h4>
+        </div>
+    }
+</div>

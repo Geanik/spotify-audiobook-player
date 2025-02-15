@@ -2,10 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { StorageService } from '../../services/storage.service';
 import { SpotifyService } from '../../services/spotify.service';
 import { tap } from 'rxjs';
+import { AlbumCardComponent } from '../album-card/album-card.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-home',
-    imports: [],
+    imports: [AlbumCardComponent, RouterLink],
     templateUrl: './home.component.html',
     styleUrl: './home.component.scss',
 })
@@ -23,5 +25,9 @@ export class HomeComponent implements OnInit {
             .getAlbums(albumIds)
             .pipe(tap((albums) => (this.savedAlbums = albums)))
             .subscribe();
+    }
+
+    onAlbumClick(albumId: string) {
+        this.spotifyService.playAlbum(albumId);
     }
 }

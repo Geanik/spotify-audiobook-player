@@ -1,10 +1,22 @@
-<p>home works!</p>
+<div class="container text-center">
+    <h1 class="display-3 text-primary">
+        Library
+    </h1>
+    @if (savedAlbums.length > 0) {
+        <p class="lead">All your albums you already played</p>
+    }
 
-@for (album of savedAlbums; track album) {
-    <div>
-        <p><strong>{{ album.name }}</strong> by {{ album.artists[0]?.name }}</p>
-        <img [src]="album.images[0]?.url" alt="{{ album.name }}" width="100"/>
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 mt-3">
+        @for (album of savedAlbums; track album) {
+            <app-album-card [album]="album" (albumClicked)="onAlbumClick(album.id)">
+            </app-album-card>
+        }
     </div>
-} @empty {
-    <p>No albums saved</p>
-}
+
+    @if (savedAlbums.length == 0) {
+        <div class="col-12">
+            <h4>No albums saved yet</h4>
+            <p>Go to <a [routerLink]="['/search']">search</a> search to find some albums</p>
+        </div>
+    }
+</div>
