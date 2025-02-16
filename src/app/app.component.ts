@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { SpotifyService } from './services/spotify.service';
 import { map } from 'rxjs';
@@ -19,7 +19,7 @@ import { MediaControlComponent } from './components/media-control/media-control.
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
     title = 'spotify-audiobook-player';
     isMenuCollapsed = true;
     userDisplayName$ = this.spotifyService.userProfile$.pipe(
@@ -27,4 +27,8 @@ export class AppComponent {
     );
 
     constructor(private spotifyService: SpotifyService) {}
+
+    ngOnInit(): void {
+        this.spotifyService.initialize();
+    }
 }

@@ -26,17 +26,14 @@ export class MediaControlComponent {
     constructor(private spotifyService: SpotifyService) {}
 
     togglePlay() {
-        console.log('Toggle Play');
         this.spotifyService.togglePlay();
     }
 
     prev() {
-        console.log('Previous track');
         this.spotifyService.skipToPrevTrack();
     }
 
     next() {
-        console.log('Next track');
         this.spotifyService.skipToNextTrack();
     }
 }

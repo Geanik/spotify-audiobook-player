@@ -13,7 +13,7 @@ import { StorageService } from './storage.service';
     providedIn: 'root',
 })
 export class SpotifyService {
-    private spotify: SpotifyApi;
+    private spotify!: SpotifyApi;
     public userProfile$ = new BehaviorSubject<UserProfile | null>(null);
     public currentTrack$ = this.spotifyPlayerService.currentTrack$;
     public isPlaying$ = this.spotifyPlayerService.isPlaying$;
@@ -21,7 +21,9 @@ export class SpotifyService {
     constructor(
         private spotifyPlayerService: SpotifyPlayerService,
         private storageService: StorageService,
-    ) {
+    ) {}
+
+    initialize() {
         this.spotify = SpotifyApi.withUserAuthorization(
             environment.spotify.clientId,
             environment.spotify.redirectUri,
