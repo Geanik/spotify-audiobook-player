@@ -1,5 +1,13 @@
 import { Injectable } from '@angular/core';
-import { from, map, Observable, ReplaySubject, switchMap, tap } from 'rxjs';
+import {
+    from,
+    map,
+    Observable,
+    ReplaySubject,
+    switchMap,
+    take,
+    tap,
+} from 'rxjs';
 
 declare global {
     interface Window {
@@ -110,7 +118,18 @@ export class SpotifyPlayerService {
     }
 
     togglePlay() {
-        this.player.togglePlay();
+        this.isPlaying
+            .pipe(
+                take(1),
+                tap((isPlaying) => {
+                    if (isPlaying) {
+                        this.player.pause();
+                    } else {
+                        this.player.resume();
+                    }
+                }),
+            )
+            .subscribe();
     }
 
     skipToNextTrack() {

@@ -6,6 +6,7 @@ import { AsyncPipe } from '@angular/common';
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
 import { MediaControlComponent } from './components/media-control/media-control.component';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { MediaSessionService } from './services/media-session.service';
 
 @Component({
     selector: 'app-root',
@@ -47,9 +48,13 @@ export class AppComponent implements OnInit {
         map((track) => track !== null),
     );
 
-    constructor(private spotifyService: SpotifyService) {}
+    constructor(
+        private spotifyService: SpotifyService,
+        private mediaSessionService: MediaSessionService,
+    ) {}
 
     ngOnInit(): void {
         this.spotifyService.initialize();
+        this.mediaSessionService.initialize();
     }
 }
