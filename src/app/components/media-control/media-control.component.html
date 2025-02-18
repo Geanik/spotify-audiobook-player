@@ -13,15 +13,15 @@
         }
 
         <div class="media-controls d-flex align-items-center">
-            <button type="button" class="btn btn-link text-light me-3" (click)="prev()">
+            <button type="button" class="btn btn-secondary me-2" (click)="prev()">
                 <i class="bi bi-skip-start-fill" style="font-size: 1.5rem;"></i>
             </button>
-            <button type="button" class="btn btn-link text-light me-3" (click)="togglePlay()">
+            <button type="button" class="btn btn-secondary me-2" (click)="togglePlay()">
                 <i class="bi" [ngClass]="{'bi-pause-fill': isPlaying$ | async, 'bi-play-fill': !(isPlaying$ | async)}"
                    style="font-size: 1.5rem;"></i>
             </button>
 
-            <button type="button" class="btn btn-link text-light" (click)="next()">
+            <button type="button" class="btn btn-secondary" (click)="next()">
                 <i class="bi bi-skip-end-fill" style="font-size: 1.5rem;"></i>
             </button>
         </div>
