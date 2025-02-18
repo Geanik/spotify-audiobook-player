@@ -15,7 +15,7 @@ export class MediaControlComponent {
         map((track) =>
             track
                 ? {
-                      albumCoverUrl: track.album.images[0].url,
+                      albumCoverUrl: track.album.images.findSmallImage().url,
                       trackTitle: track.name,
                       trackArtist: track.artists[0].name,
                   }

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
+    Image,
     SimplifiedTrack,
     SpotifyApi,
     UserProfile,
@@ -107,3 +108,27 @@ export class SpotifyService {
             .subscribe();
     }
 }
+
+declare global {
+    interface Array<T> {
+        findSmallImage(this: Image[]): Image;
+
+        findMediumImage(this: Image[]): Image;
+
+        findLargeImage(this: Image[]): Image;
+    }
+}
+
+Array.prototype.findSmallImage = function (this: Image[]): Image {
+    return [...this].sort((a, b) => a.width - b.width)[0];
+};
+
+Array.prototype.findMediumImage = function (this: Image[]): Image {
+    const sorted = [...this].sort((a, b) => a.width - b.width);
+    const middleIndex = Math.floor((sorted.length - 1) / 2);
+    return sorted[middleIndex];
+};
+
+Array.prototype.findLargeImage = function (this: Image[]): Image {
+    return [...this].sort((a, b) => a.width - b.width)[this.length - 1];
+};
