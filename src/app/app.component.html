@@ -34,4 +34,7 @@
 
 <router-outlet/>
 
-<app-media-control></app-media-control>
+@if (showMediaControl$ | async) {
+    <app-media-control [@fadeIn]></app-media-control>
+}
+
