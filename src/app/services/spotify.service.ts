@@ -27,13 +27,7 @@ export class SpotifyService {
         this.spotify = SpotifyApi.withUserAuthorization(
             environment.spotify.clientId,
             environment.spotify.redirectUri,
-            [
-                'user-read-email',
-                'playlist-read-private',
-                'streaming',
-                'user-read-playback-state',
-                'user-modify-playback-state',
-            ],
+            ['streaming'],
         );
 
         from(this.spotify.currentUser.profile())
