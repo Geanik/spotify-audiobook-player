@@ -60,6 +60,13 @@ export class SpotifyPlayerService {
     }
 
     private registerPlayerEventListeners() {
+        this.player.addListener('ready', ({ device_id }: any) => {
+            console.log('Spotify Player is ready with Device ID', device_id);
+            this.deviceId.next(device_id);
+        });
+        this.player.addListener('not_ready', ({ device_id }: any) => {
+            console.log('Device ID has gone offline', device_id);
+        });
         this.player.addListener('initialization_error', ({ message }: any) => {
             console.error(message);
         });
@@ -68,17 +75,6 @@ export class SpotifyPlayerService {
         });
         this.player.addListener('account_error', ({ message }: any) => {
             console.error(message);
-        });
-        this.player.addListener('playback_error', ({ message }: any) => {
-            console.error(message);
-        });
-        this.player.addListener('ready', ({ device_id }: any) => {
-            console.log('Spotify Player is ready with Device ID', device_id);
-            this.deviceId.next(device_id);
-            // You might want to transfer playback to this device using the Web API
-        });
-        this.player.addListener('not_ready', ({ device_id }: any) => {
-            console.log('Device ID has gone offline', device_id);
         });
         this.player.addListener('player_state_changed', (state: any) => {
             if (state) {
