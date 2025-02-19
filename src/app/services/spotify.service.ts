@@ -83,6 +83,10 @@ export class SpotifyService {
     }
 
     playAlbum(albumId: string) {
+        if (!albumId) {
+            return;
+        }
+
         const lastPlayedTrack = this.storageService.getLastPlayedTrack(albumId);
 
         let offSet: object | undefined = undefined;
@@ -95,14 +99,19 @@ export class SpotifyService {
         this.spotifyPlayerService.deviceId$
             .pipe(
                 tap((deviceId) => {
-                    if (deviceId) {
-                        this.spotify.player.startResumePlayback(
-                            deviceId,
-                            `spotify:album:${albumId}`,
-                            undefined,
-                            offSet,
+                    if (!deviceId) {
+                        console.log(
+                            'Can not play album as device ID not initialized',
                         );
+                        return;
                     }
+
+                    this.spotify.player.startResumePlayback(
+                        deviceId,
+                        `spotify:album:${albumId}`,
+                        undefined,
+                        offSet,
+                    );
                 }),
             )
             .subscribe();

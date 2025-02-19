@@ -10,14 +10,17 @@ export class MediaSessionService {
     constructor(private spotifyService: SpotifyService) {}
 
     initialize() {
-        if (this.isSupported()) {
-            console.log('MediaSession set up');
-            this.initializeActionHandlers();
-            this.updateMetadataOnSpotifyTrackChanged();
+        if (!this.mediaSessionIsSupported()) {
+            console.log('MediaSession not available');
+            return;
         }
+
+        console.log('MediaSession set up');
+        this.initializeActionHandlers();
+        this.updateMetadataOnSpotifyTrackChanged();
     }
 
-    private isSupported(): boolean {
+    private mediaSessionIsSupported(): boolean {
         return 'mediaSession' in navigator;
     }
 
@@ -26,6 +29,7 @@ export class MediaSessionService {
             .pipe(
                 tap((track) => {
                     if (track) {
+                        console.log('Updating MediaSession metadata');
                         const artworks = track.album.images.map(
                             (image: Image) => ({
                                 src: image.url,
@@ -61,7 +65,7 @@ export class MediaSessionService {
         action: MediaSessionAction,
         handler: MediaSessionActionHandler | null,
     ): void {
-        if (this.isSupported()) {
+        if (this.mediaSessionIsSupported()) {
             try {
                 navigator.mediaSession.setActionHandler(action, handler);
             } catch (error) {

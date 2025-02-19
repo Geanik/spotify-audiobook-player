@@ -40,7 +40,6 @@ export class AlbumSearchComponent {
             .searchAlbums(query)
             .pipe(
                 tap((result: any) => {
-                    console.log(result);
                     this.albums = result.albums.items;
                 }),
             )
