@@ -30,4 +30,11 @@ export class HomeComponent implements OnInit {
     onAlbumClick(albumId: string) {
         this.spotifyService.playAlbum(albumId);
     }
+
+    onDeleteAlbum(albumId: string) {
+        this.storageService.removeAlbum(albumId);
+        this.savedAlbums = this.savedAlbums.filter(
+            (album) => album.id !== albumId,
+        );
+    }
 }

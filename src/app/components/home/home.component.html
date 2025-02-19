@@ -9,6 +9,9 @@
     <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 mt-3">
         @for (album of savedAlbums; track album) {
             <app-album-card [album]="album" (albumClicked)="onAlbumClick(album.id)">
+                <button class="btn btn-danger" (click)="onDeleteAlbum(album.id); $event.stopPropagation()">
+                    Delete
+                </button>
             </app-album-card>
         }
     </div>

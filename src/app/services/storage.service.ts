@@ -21,6 +21,11 @@ export class StorageService {
             .map((key) => key.replace('lastPlayed.', ''));
     }
 
+    removeAlbum(albumId: string): void {
+        const key = this.getLastPlayedTrackKey(albumId);
+        localStorage.removeItem(key);
+    }
+
     private getLastPlayedTrackKey(albumId: string): string {
         return `lastPlayed.${albumId}`;
     }
