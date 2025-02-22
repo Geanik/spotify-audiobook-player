@@ -1,32 +1,58 @@
 import { Injectable } from '@angular/core';
 
+export interface AudiobookPlayerStorage {
+    albums: StorageAlbum[];
+}
+
+export interface StorageAlbum {
+    id: string;
+    lastPlayedTrack: string;
+}
+
 @Injectable({
     providedIn: 'root',
 })
 export class StorageService {
+    private storageKey = 'audiobookPlayer';
+
     constructor() {}
 
     saveLastPlayedTrack(albumId: string, trackId: string) {
-        localStorage.setItem(this.getLastPlayedTrackKey(albumId), trackId);
+        const storage = this.getStorage();
+        const album = storage.albums.find((album) => album.id === albumId);
+
+        if (album) {
+            album.lastPlayedTrack = trackId;
+        } else {
+            storage.albums.push({ id: albumId, lastPlayedTrack: trackId });
+        }
+
+        this.setStorage(storage);
     }
 
     getLastPlayedTrack(albumId: string): string | null {
-        return localStorage.getItem(this.getLastPlayedTrackKey(albumId));
+        const storage = this.getStorage();
+        const album = storage.albums.find((album) => album.id === albumId);
+        return album ? album.lastPlayedTrack : null;
     }
 
     getAllSavedAlbumIds(): string[] {
-        const keys = Object.keys(localStorage);
-        return keys
-            .filter((key) => key.startsWith('lastPlayed.'))
-            .map((key) => key.replace('lastPlayed.', ''));
+        const storage = this.getStorage();
+        return storage.albums.map((album) => album.id);
     }
 
     removeAlbum(albumId: string): void {
-        const key = this.getLastPlayedTrackKey(albumId);
-        localStorage.removeItem(key);
+        const storage = this.getStorage();
+        storage.albums = storage.albums.filter((album) => album.id !== albumId);
+        this.setStorage(storage);
     }
 
-    private getLastPlayedTrackKey(albumId: string): string {
-        return `lastPlayed.${albumId}`;
+    private getStorage(): AudiobookPlayerStorage {
+        const storage = localStorage.getItem(this.storageKey);
+        return storage ? JSON.parse(storage) : { albums: [] };
+    }
+
+    private setStorage(storage: AudiobookPlayerStorage): void {
+        localStorage.setItem(this.storageKey, JSON.stringify(storage));
     }
 }
