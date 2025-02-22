@@ -15,9 +15,10 @@ export class MediaSessionService {
             return;
         }
 
-        console.log('MediaSession set up');
         this.initializeActionHandlers();
         this.updateMetadataOnSpotifyTrackChanged();
+
+        console.log('MediaSession set up finished');
     }
 
     private mediaSessionIsSupported(): boolean {
@@ -29,7 +30,7 @@ export class MediaSessionService {
             .pipe(
                 tap((track) => {
                     if (track) {
-                        console.log('Updating MediaSession metadata');
+                        console.log('Updating MediaSession metadata', track);
                         const artworks = track.album.images.map(
                             (image: Image) => ({
                                 src: image.url,

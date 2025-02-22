@@ -68,12 +68,33 @@ export class SpotifyPlayerService {
     }
 
     private registerPlayerEventListeners() {
+        this.setupErrorEventListeners();
+
         this.player.addListener('ready', ({ device_id }: any) => {
             console.log('Spotify Player is ready with Device ID', device_id);
             this.deviceId.next(device_id);
         });
         this.player.addListener('not_ready', ({ device_id }: any) => {
             console.log('Device ID has gone offline', device_id);
+        });
+        this.player.addListener('player_state_changed', (state: any) => {
+            console.log('Player state changed', state);
+
+            if (state) {
+                if (typeof state.paused === 'boolean') {
+                    this.isPlaying.next(!state.paused);
+                }
+
+                if (state.track_window && state.track_window.current_track) {
+                    this.currentTrack.next(state.track_window.current_track);
+                }
+            }
+        });
+    }
+
+    private setupErrorEventListeners() {
+        this.player.addListener('autoplay_failed', ({ message }: any) => {
+            console.error(message);
         });
         this.player.addListener('initialization_error', ({ message }: any) => {
             console.error(message);
@@ -84,16 +105,8 @@ export class SpotifyPlayerService {
         this.player.addListener('account_error', ({ message }: any) => {
             console.error(message);
         });
-        this.player.addListener('player_state_changed', (state: any) => {
-            if (state) {
-                if (typeof state.paused === 'boolean') {
-                    this.isPlaying.next(!state.paused);
-                }
-
-                if (state.track_window && state.track_window.current_track) {
-                    this.currentTrack.next(state.track_window.current_track);
-                }
-            }
+        this.player.addListener('playback_error', ({ message }: any) => {
+            console.error(message);
         });
     }
 
