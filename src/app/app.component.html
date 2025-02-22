@@ -20,10 +20,19 @@
             @if (userDisplayName$ | async; as userDisplayName) {
                 <div id="profileStuff" class="ml-auto">
                     <ul class="navbar-nav ml-auto">
-                        <li class="nav-item">
-                            {{ userDisplayName }}
-                            <img src="https://api.dicebear.com/8.x/pixel-art/svg" alt="profile" width="30"
-                                 class="rounded-circle">
+                        <li class="nav-item" ngbDropdown>
+                            <a class="nav-link" tabindex="0" ngbDropdownToggle id="profileDropdown" role="button">
+                                @if (userAvatarUrl$ | async; as userAvatarUrl) {
+                                    <img [src]="userAvatarUrl" alt="profile" width="30"
+                                         class="rounded-circle">
+                                }
+
+                                {{ userDisplayName }}
+                            </a>
+                            <div ngbDropdownMenu aria-labelledby="profileDropdown"
+                                 class="dropdown-menu dropdown-menu-end">
+                                <a ngbDropdownItem [routerLink]="'/'" (click)="onLogout()">Logout</a>
+                            </div>
                         </li>
                     </ul>
                 </div>

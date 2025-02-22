@@ -6,7 +6,15 @@ import {
     UserProfile,
 } from '@spotify/web-api-ts-sdk';
 import { environment } from '../../environments/environment';
-import { BehaviorSubject, from, map, Observable, switchMap, tap } from 'rxjs';
+import {
+    BehaviorSubject,
+    from,
+    map,
+    Observable,
+    of,
+    switchMap,
+    tap,
+} from 'rxjs';
 import { SpotifyPlayerService } from './spotify-player.service';
 import { StorageService } from './storage.service';
 
@@ -54,6 +62,10 @@ export class SpotifyService {
 
     private initializePlayerService(accessToken: string) {
         this.spotifyPlayerService.initialize(accessToken).subscribe();
+    }
+
+    logout(): Observable<void> {
+        return of(this.spotify.logOut());
     }
 
     togglePlay() {

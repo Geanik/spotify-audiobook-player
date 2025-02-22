@@ -1,9 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { SpotifyService } from './services/spotify.service';
-import { map } from 'rxjs';
+import { map, tap } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
-import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
+import {
+    NgbCollapse,
+    NgbDropdown,
+    NgbDropdownItem,
+    NgbDropdownMenu,
+    NgbDropdownToggle,
+} from '@ng-bootstrap/ng-bootstrap';
 import { MediaControlComponent } from './components/media-control/media-control.component';
 import { animate, style, transition, trigger } from '@angular/animations';
 
@@ -16,6 +22,10 @@ import { animate, style, transition, trigger } from '@angular/animations';
         RouterLinkActive,
         NgbCollapse,
         MediaControlComponent,
+        NgbDropdownToggle,
+        NgbDropdownMenu,
+        NgbDropdownItem,
+        NgbDropdown,
     ],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
@@ -38,10 +48,13 @@ import { animate, style, transition, trigger } from '@angular/animations';
     ],
 })
 export class AppComponent implements OnInit {
-    title = 'spotify-audiobook-player';
+    title = 'Audiobook Player';
     isMenuCollapsed = true;
     userDisplayName$ = this.spotifyService.userProfile$.pipe(
         map((profile) => profile?.display_name ?? 'Guest'),
+    );
+    userAvatarUrl$ = this.spotifyService.userProfile$.pipe(
+        map((profile) => profile?.images?.[0]?.url),
     );
     showMediaControl$ = this.spotifyService.currentTrack$.pipe(
         map((track) => track !== null),
@@ -51,5 +64,12 @@ export class AppComponent implements OnInit {
 
     ngOnInit(): void {
         this.spotifyService.initialize();
+    }
+
+    onLogout() {
+        this.spotifyService
+            .logout()
+            .pipe(tap(() => this.spotifyService.initialize()))
+            .subscribe();
     }
 }
