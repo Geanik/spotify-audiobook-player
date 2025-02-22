@@ -1,5 +1,5 @@
 <div class="media-control-bar fixed-bottom bg-body-tertiary py-2">
-    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
+    <div class="container d-flex justify-content-between align-items-center">
         @if (currentTrack$ | async; as currentTrack) {
             <div class="track-info d-flex align-items-center mb-2 mb-md-0">
                 <img [src]="currentTrack.albumCoverUrl" alt="Album cover" class="album-cover me-2"
@@ -13,7 +13,7 @@
         }
 
         <div class="media-controls d-flex align-items-center">
-            <button type="button" class="btn btn-secondary me-2" (click)="prev()">
+            <button type="button" class="btn btn-secondary me-2 ms-4" (click)="prev()">
                 <i class="bi bi-skip-start-fill" style="font-size: 1.5rem;"></i>
             </button>
             <button type="button" class="btn btn-secondary me-2" (click)="togglePlay()">
