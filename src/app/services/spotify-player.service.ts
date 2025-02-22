@@ -52,6 +52,7 @@ export class SpotifyPlayerService {
                     getOAuthToken: (cb: (token: string) => void) => {
                         cb(token);
                     },
+                    enableMediaSession: true,
                 });
                 this.registerPlayerEventListeners();
             }),
