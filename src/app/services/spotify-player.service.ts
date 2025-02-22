@@ -152,4 +152,8 @@ export class SpotifyPlayerService {
     skipToPrevTrack() {
         this.player.previousTrack();
     }
+
+    activatePlayer(): Observable<any> {
+        return from(this.player.activateElement());
+    }
 }

@@ -96,8 +96,10 @@ export class SpotifyService {
             };
         }
 
-        this.spotifyPlayerService.deviceId$
+        this.spotifyPlayerService
+            .activatePlayer()
             .pipe(
+                switchMap(() => this.spotifyPlayerService.deviceId$),
                 tap((deviceId) => {
                     if (!deviceId) {
                         console.log(
