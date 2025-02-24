@@ -23,13 +23,16 @@ export class HomeComponent implements OnInit {
 
     ngOnInit(): void {
         const albumIds = this.storageService.getAllSavedAlbumIds();
-        this.spotifyService
-            .getAlbums(albumIds)
-            .pipe(
-                tap((albums) => (this.savedAlbums = albums)),
-                this.toastService.withErrorToast('Failed to load library'),
-            )
-            .subscribe();
+
+        if (albumIds && albumIds.length > 0) {
+            this.spotifyService
+                .getAlbums(albumIds)
+                .pipe(
+                    tap((albums) => (this.savedAlbums = albums)),
+                    this.toastService.withErrorToast('Failed to load library'),
+                )
+                .subscribe();
+        }
     }
 
     onAlbumClick(albumId: string) {
