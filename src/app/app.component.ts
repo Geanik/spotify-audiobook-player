@@ -12,6 +12,7 @@ import {
 } from '@ng-bootstrap/ng-bootstrap';
 import { MediaControlComponent } from './components/media-control/media-control.component';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { ToastComponent } from './components/toast/toast.component';
 
 @Component({
     selector: 'app-root',
@@ -26,6 +27,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
         NgbDropdownMenu,
         NgbDropdownItem,
         NgbDropdown,
+        ToastComponent,
     ],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
