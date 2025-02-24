@@ -99,15 +99,7 @@ export class SpotifyService {
             return;
         }
 
-        const lastPlayedTrack = this.storageService.getLastPlayedTrack(albumId);
-
-        let offSet: object | undefined = undefined;
-        if (lastPlayedTrack) {
-            offSet = {
-                uri: `spotify:track:${lastPlayedTrack}`,
-            };
-        }
-
+        let offSet = this.buildOffSetIfAlreadyPlayed(albumId);
         this.spotifyPlayerService
             .activatePlayer()
             .pipe(
@@ -129,6 +121,22 @@ export class SpotifyService {
                 }),
             )
             .subscribe();
+    }
+
+    private buildOffSetIfAlreadyPlayed(albumId: string) {
+        const lastPlayedTrack = this.storageService.getLastPlayedTrack(albumId);
+
+        let offSet: object | undefined = undefined;
+        if (lastPlayedTrack) {
+            offSet = {
+                uri: `spotify:track:${lastPlayedTrack}`,
+            };
+        }
+        return offSet;
+    }
+
+    isAuthenticated() {
+        return this.spotify && this.spotify.getAccessToken() !== null;
     }
 }
 
