@@ -3,6 +3,7 @@ import { SpotifyService } from '../../services/spotify.service';
 import { debounceTime, distinctUntilChanged, Subject, tap } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { AlbumCardComponent } from '../album-card/album-card.component';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
     selector: 'app-album-search',
@@ -15,7 +16,10 @@ export class AlbumSearchComponent {
     albums: any[] = [];
     private searchSubject = new Subject<string>();
 
-    constructor(private spotifyService: SpotifyService) {
+    constructor(
+        private spotifyService: SpotifyService,
+        private toastService: ToastService,
+    ) {
         this.setupSearch();
     }
 
@@ -42,11 +46,15 @@ export class AlbumSearchComponent {
                 tap((result: any) => {
                     this.albums = result.albums.items;
                 }),
+                this.toastService.withErrorToast('Failed to search albums'),
             )
             .subscribe();
     }
 
     onAlbumClick(albumId: string) {
-        this.spotifyService.playAlbum(albumId);
+        this.spotifyService
+            .playAlbum(albumId)
+            .pipe(this.toastService.withErrorToast('Failed to play album'))
+            .subscribe();
     }
 }

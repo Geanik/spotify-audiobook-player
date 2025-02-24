@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ToastService } from './toast.service';
 
 export interface AudiobookPlayerStorage {
     albums: StorageAlbum[];
@@ -15,7 +16,7 @@ export interface StorageAlbum {
 export class StorageService {
     private storageKey = 'audiobookPlayer';
 
-    constructor() {}
+    constructor(private toastService: ToastService) {}
 
     saveLastPlayedTrack(albumId: string, trackId: string) {
         const storage = this.getStorage();
@@ -25,6 +26,7 @@ export class StorageService {
             album.lastPlayedTrack = trackId;
         } else {
             storage.albums.push({ id: albumId, lastPlayedTrack: trackId });
+            this.toastService.showSuccess('Added album to library');
         }
 
         this.setStorage(storage);

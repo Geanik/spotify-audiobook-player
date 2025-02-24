@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { catchError, Observable, of } from 'rxjs';
 
 export enum ToastType {
     Success = 'success',
@@ -32,5 +33,15 @@ export class ToastService {
 
     remove(toast: Toast) {
         this.toasts = this.toasts.filter((t) => t != toast);
+    }
+
+    withErrorToast(message: string) {
+        return <T>(source: Observable<T>) =>
+            source.pipe(
+                catchError((error) => {
+                    this.showError(message);
+                    return of([] as T);
+                }),
+            );
     }
 }

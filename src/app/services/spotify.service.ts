@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
+    Album,
     Image,
     SimplifiedTrack,
     SpotifyApi,
@@ -14,6 +15,7 @@ import {
     of,
     switchMap,
     tap,
+    throwError,
 } from 'rxjs';
 import { SpotifyPlayerService } from './spotify-player.service';
 import { StorageService } from './storage.service';
@@ -84,7 +86,7 @@ export class SpotifyService {
         return from(this.spotify.search(query, ['album']));
     }
 
-    getAlbums(albumIds: string[]) {
+    getAlbums(albumIds: string[]): Observable<Album[]> {
         return from(this.spotify.albums.get(albumIds));
     }
 
@@ -94,33 +96,34 @@ export class SpotifyService {
         );
     }
 
-    playAlbum(albumId: string) {
+    playAlbum(albumId: string): Observable<void> {
         if (!albumId) {
-            return;
+            return throwError(() => new Error('Must provide albumId'));
         }
 
         let offSet = this.buildOffSetIfAlreadyPlayed(albumId);
-        this.spotifyPlayerService
-            .activatePlayer()
-            .pipe(
-                switchMap(() => this.spotifyPlayerService.deviceId$),
-                tap((deviceId) => {
-                    if (!deviceId) {
-                        console.log(
-                            'Can not play album as device ID not initialized',
-                        );
-                        return;
-                    }
+        return this.spotifyPlayerService.activatePlayer().pipe(
+            switchMap(() => this.spotifyPlayerService.deviceId$),
+            switchMap((deviceId) => {
+                if (!deviceId) {
+                    console.log(
+                        'Can not play album as device ID not initialized',
+                    );
+                    return throwError(
+                        () => new Error('Device ID not initialized'),
+                    );
+                }
 
+                return from(
                     this.spotify.player.startResumePlayback(
                         deviceId,
                         `spotify:album:${albumId}`,
                         undefined,
                         offSet,
-                    );
-                }),
-            )
-            .subscribe();
+                    ),
+                );
+            }),
+        );
     }
 
     private buildOffSetIfAlreadyPlayed(albumId: string) {
