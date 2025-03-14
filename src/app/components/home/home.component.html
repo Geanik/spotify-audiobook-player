@@ -3,10 +3,10 @@
         Library
     </h1>
     @if (savedAlbums.length > 0) {
-        <p class="lead">All your albums you already played</p>
+        <p class="lead">Continue listening</p>
     }
 
-    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 mt-3">
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3 mt-3">
         @for (album of savedAlbums; track album) {
             <app-album-card [album]="album" (albumClicked)="onAlbumClick(album.id)">
                 <button class="btn btn-danger" (click)="onDeleteAlbum(album.id); $event.stopPropagation()">
@@ -18,8 +18,8 @@
 
     @if (savedAlbums.length == 0) {
         <div class="col-12">
-            <h4>No albums saved yet</h4>
-            <p>Go to <a [routerLink]="['/search']">search</a> search to find some albums</p>
+            <h4>No albums added yet</h4>
+            <p>Go to <a [routerLink]="['/search']">search</a> to find and listen to albums</p>
         </div>
     }
 </div>
