@@ -87,6 +87,10 @@ export class SpotifyService {
     }
 
     getAlbums(albumIds: string[]): Observable<Album[]> {
+        if (albumIds.length === 0) {
+            return of([]);
+        }
+
         return from(this.spotify.albums.get(albumIds));
     }
 

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { StorageService } from '../../services/storage.service';
 import { SpotifyService } from '../../services/spotify.service';
-import { tap } from 'rxjs';
+import { switchMap, tap } from 'rxjs';
 import { AlbumCardComponent } from '../album-card/album-card.component';
 import { RouterLink } from '@angular/router';
 import { ToastService } from '../../services/toast.service';
@@ -22,17 +22,16 @@ export class HomeComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        const albumIds = this.storageService.getAllSavedAlbumIds();
-
-        if (albumIds && albumIds.length > 0) {
-            this.spotifyService
-                .getAlbums(albumIds)
-                .pipe(
-                    tap((albums) => (this.savedAlbums = albums)),
-                    this.toastService.withErrorToast('Failed to load library'),
-                )
-                .subscribe();
-        }
+        this.storageService
+            .getSavedAlbumIds()
+            .pipe(
+                switchMap((albumIds) =>
+                    this.spotifyService.getAlbums(albumIds),
+                ),
+                tap((albums) => (this.savedAlbums = albums)),
+                this.toastService.withErrorToast('Failed to load library'),
+            )
+            .subscribe();
     }
 
     onAlbumClick(albumId: string) {
@@ -45,9 +44,6 @@ export class HomeComponent implements OnInit {
     onDeleteAlbum(albumId: string) {
         try {
             this.storageService.removeAlbum(albumId);
-            this.savedAlbums = this.savedAlbums.filter(
-                (album) => album.id !== albumId,
-            );
             this.toastService.showSuccess('Album removed from library');
         } catch (error) {
             this.toastService.showError('Failed to remove album from library');

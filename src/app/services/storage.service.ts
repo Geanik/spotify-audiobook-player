@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ToastService } from './toast.service';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 export interface AudiobookPlayerStorage {
     albums: StorageAlbum[];
@@ -15,6 +16,9 @@ export interface StorageAlbum {
 })
 export class StorageService {
     private storageKey = 'audiobookPlayer';
+    private albumIdsSubject: BehaviorSubject<string[]> = new BehaviorSubject<
+        string[]
+    >(this.getSavedAlbumIdsFromStorage());
 
     constructor(private toastService: ToastService) {}
 
@@ -29,7 +33,7 @@ export class StorageService {
             this.toastService.showSuccess('Added album to library');
         }
 
-        this.setStorage(storage);
+        this.saveStorageAndUpdateSubject(storage);
     }
 
     getLastPlayedTrack(albumId: string): string | null {
@@ -38,15 +42,14 @@ export class StorageService {
         return album ? album.lastPlayedTrack : null;
     }
 
-    getAllSavedAlbumIds(): string[] {
-        const storage = this.getStorage();
-        return storage.albums.map((album) => album.id);
+    getSavedAlbumIds(): Observable<string[]> {
+        return this.albumIdsSubject.asObservable();
     }
 
     removeAlbum(albumId: string): void {
         const storage = this.getStorage();
         storage.albums = storage.albums.filter((album) => album.id !== albumId);
-        this.setStorage(storage);
+        this.saveStorageAndUpdateSubject(storage);
     }
 
     private getStorage(): AudiobookPlayerStorage {
@@ -54,7 +57,13 @@ export class StorageService {
         return storage ? JSON.parse(storage) : { albums: [] };
     }
 
-    private setStorage(storage: AudiobookPlayerStorage): void {
+    private saveStorageAndUpdateSubject(storage: AudiobookPlayerStorage) {
         localStorage.setItem(this.storageKey, JSON.stringify(storage));
+        this.albumIdsSubject.next(this.getSavedAlbumIdsFromStorage());
+    }
+
+    private getSavedAlbumIdsFromStorage(): string[] {
+        const storage = this.getStorage();
+        return storage.albums.map((album) => album.id);
     }
 }
