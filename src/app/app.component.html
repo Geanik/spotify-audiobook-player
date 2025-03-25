@@ -21,13 +21,16 @@
                 <div id="profileStuff" class="ml-auto">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item" ngbDropdown>
-                            <a class="nav-link" tabindex="0" ngbDropdownToggle id="profileDropdown" role="button">
+                            <a class="nav-link d-flex align-items-center gap-2" tabindex="0" ngbDropdownToggle
+                               id="profileDropdown" role="button">
                                 @if (userAvatarUrl$ | async; as userAvatarUrl) {
                                     <img [src]="userAvatarUrl" alt="profile" width="30"
                                          class="rounded-circle">
+                                } @else {
+                                    <div class="avatar-skeleton rounded-circle"></div>
                                 }
 
-                                {{ userDisplayName }}
+                                <span>{{ userDisplayName }}</span>
                             </a>
                             <div ngbDropdownMenu aria-labelledby="profileDropdown"
                                  class="dropdown-menu dropdown-menu-end">
