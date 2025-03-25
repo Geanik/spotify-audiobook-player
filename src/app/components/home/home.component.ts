@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { StorageService } from '../../services/storage.service';
 import { SpotifyService } from '../../services/spotify.service';
-import { switchMap, tap } from 'rxjs';
+import { Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { AlbumCardComponent } from '../album-card/album-card.component';
 import { RouterLink } from '@angular/router';
 import { ToastService } from '../../services/toast.service';
@@ -25,9 +25,10 @@ import { animate, style, transition, trigger } from '@angular/animations';
         ]),
     ],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
     isLoading = true;
     savedAlbums: any[] = [];
+    private destroy$ = new Subject<void>();
 
     constructor(
         private storageService: StorageService,
@@ -39,6 +40,7 @@ export class HomeComponent implements OnInit {
         this.storageService
             .getSavedAlbumIds()
             .pipe(
+                takeUntil(this.destroy$),
                 switchMap((albumIds) => {
                     this.isLoading = true;
                     return this.spotifyService.getAlbums(albumIds);
@@ -50,6 +52,11 @@ export class HomeComponent implements OnInit {
                 this.toastService.withErrorToast('Failed to load library'),
             )
             .subscribe();
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 
     onAlbumClick(albumId: string) {
