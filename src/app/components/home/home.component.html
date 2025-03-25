@@ -2,22 +2,29 @@
     <h1 class="display-3 text-primary">
         Library
     </h1>
-    @if (savedAlbums.length > 0) {
-        <p class="lead">Continue listening</p>
-    }
+    <p class="lead">Continue listening</p>
 
     <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3 mt-3">
-        @for (album of savedAlbums; track album) {
-            <app-album-card [album]="album" (albumClicked)="onAlbumClick(album.id)">
-                <button class="btn btn-danger" (click)="onDeleteAlbum(album.id); $event.stopPropagation()">
-                    Delete
-                </button>
-            </app-album-card>
+        @if (isLoading) {
+            <app-album-card-skeleton @fadeAnimation></app-album-card-skeleton>
+            <app-album-card-skeleton @fadeAnimation></app-album-card-skeleton>
+            <!-- skeleton card 3 (visible md and up) -->
+            <app-album-card-skeleton class="d-none d-md-block" @fadeAnimation></app-album-card-skeleton>
+            <!-- skeleton card 4 (visible lg and up) -->
+            <app-album-card-skeleton class="d-none d-lg-block" @fadeAnimation></app-album-card-skeleton>
+        } @else {
+            @for (album of savedAlbums; track album) {
+                <app-album-card [album]="album" (albumClicked)="onAlbumClick(album.id)" @fadeAnimation>
+                    <button class="btn btn-danger" (click)="onDeleteAlbum(album.id); $event.stopPropagation()">
+                        Delete
+                    </button>
+                </app-album-card>
+            }
         }
     </div>
 
-    @if (savedAlbums.length == 0) {
-        <div class="col-12">
+    @if (!isLoading && savedAlbums.length == 0) {
+        <div class="col-12" @fadeAnimation>
             <h4>No albums added yet</h4>
             <p>Go to <a [routerLink]="['/search']">search</a> to find and listen to albums</p>
         </div>

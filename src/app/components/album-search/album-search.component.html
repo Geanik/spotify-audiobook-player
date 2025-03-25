@@ -21,15 +21,18 @@
     </div>
 
     <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3 mt-3">
-        @for (album of albums; track album.id) {
-            <app-album-card [album]="album" (albumClicked)="onAlbumClick(album.id)">
-            </app-album-card>
+        @if (isLoading) {
+            <app-album-card-skeleton @fadeAnimation></app-album-card-skeleton>
+            <app-album-card-skeleton @fadeAnimation></app-album-card-skeleton>
+            <!-- skeleton card 3 (visible md and up) -->
+            <app-album-card-skeleton class="d-none d-md-block" @fadeAnimation></app-album-card-skeleton>
+            <!-- skeleton card 4 (visible lg and up) -->
+            <app-album-card-skeleton class="d-none d-lg-block" @fadeAnimation></app-album-card-skeleton>
+        } @else {
+            @for (album of albums; track album.id) {
+                <app-album-card [album]="album" (albumClicked)="onAlbumClick(album.id)" @fadeAnimation>
+                </app-album-card>
+            }
         }
     </div>
-
-    @if (query.trim() && albums.length == 0) {
-        <div class="col-12">
-            <h4>No albums found</h4>
-        </div>
-    }
 </div>
